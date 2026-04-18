@@ -23,85 +23,85 @@ import java.util.List;
 @Table(name = "ventas")
 public class Venta {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "usuario_id", nullable = false)
+  private Usuario usuario;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal total;
+  @Column(nullable = false, precision = 12, scale = 2)
+  private BigDecimal total;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private VentaEstado estado;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private VentaEstado estado;
 
-    @Column(name = "fecha_venta", nullable = false)
-    private LocalDateTime fechaVenta;
+  @Column(name = "fecha_venta", nullable = false)
+  private LocalDateTime fechaVenta;
 
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VentaDetalle> detalles = new ArrayList<>();
+  @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<VentaDetalle> detalles = new ArrayList<>();
 
-    @PrePersist
-    private void prePersist() {
-        if (estado == null) {
-            estado = VentaEstado.CREADA;
-        }
-        if (total == null) {
-            total = BigDecimal.ZERO;
-        }
-        if (fechaVenta == null) {
-            fechaVenta = LocalDateTime.now();
-        }
+  @PrePersist
+  private void prePersist() {
+    if (estado == null) {
+      estado = VentaEstado.CREADA;
     }
-
-    public Long getId() {
-        return id;
+    if (total == null) {
+      total = BigDecimal.ZERO;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    if (fechaVenta == null) {
+      fechaVenta = LocalDateTime.now();
     }
+  }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+  public Usuario getUsuario() {
+    return usuario;
+  }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
+  }
 
-    public VentaEstado getEstado() {
-        return estado;
-    }
+  public BigDecimal getTotal() {
+    return total;
+  }
 
-    public void setEstado(VentaEstado estado) {
-        this.estado = estado;
-    }
+  public void setTotal(BigDecimal total) {
+    this.total = total;
+  }
 
-    public LocalDateTime getFechaVenta() {
-        return fechaVenta;
-    }
+  public VentaEstado getEstado() {
+    return estado;
+  }
 
-    public void setFechaVenta(LocalDateTime fechaVenta) {
-        this.fechaVenta = fechaVenta;
-    }
+  public void setEstado(VentaEstado estado) {
+    this.estado = estado;
+  }
 
-    public List<VentaDetalle> getDetalles() {
-        return detalles;
-    }
+  public LocalDateTime getFechaVenta() {
+    return fechaVenta;
+  }
 
-    public void setDetalles(List<VentaDetalle> detalles) {
-        this.detalles = detalles;
-    }
+  public void setFechaVenta(LocalDateTime fechaVenta) {
+    this.fechaVenta = fechaVenta;
+  }
+
+  public List<VentaDetalle> getDetalles() {
+    return detalles;
+  }
+
+  public void setDetalles(List<VentaDetalle> detalles) {
+    this.detalles = detalles;
+  }
 }

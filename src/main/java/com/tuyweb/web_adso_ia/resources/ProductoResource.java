@@ -25,128 +25,128 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductoResource extends BaseResource {
 
-    @GET
-    public Response getAll(@QueryParam("soloActivos") @DefaultValue("false") boolean soloActivos) {
-        String jpql = soloActivos
-                ? "SELECT p FROM Producto p WHERE p.activo = true ORDER BY p.id"
-                : "SELECT p FROM Producto p ORDER BY p.id";
+  @GET
+  public Response getAll(@QueryParam("soloActivos") @DefaultValue("false") boolean soloActivos) {
+    String jpql = soloActivos
+        ? "SELECT p FROM Producto p WHERE p.activo = true ORDER BY p.id"
+        : "SELECT p FROM Producto p ORDER BY p.id";
 
-        List<Map<String, Object>> productos = em.createQuery(jpql, Producto.class)
-                .getResultList()
-                .stream()
-                .map(DtoMapper::producto)
-                .collect(Collectors.toList());
+    List<Map<String, Object>> productos = em.createQuery(jpql, Producto.class)
+        .getResultList()
+        .stream()
+        .map(DtoMapper::producto)
+        .collect(Collectors.toList());
 
-        return Response.ok(productos).build();
+    return Response.ok(productos).build();
+  }
+
+  @GET
+  @Path("{id}")
+  public Response getById(@PathParam("id") Long id) {
+    Producto producto = em.find(Producto.class, id);
+    if (producto == null) {
+      return notFound("Producto no encontrado.");
+    }
+    return Response.ok(DtoMapper.producto(producto)).build();
+  }
+
+  @POST
+  public Response create(ProductoRequest request) {
+    if (request == null || isBlank(request.nombre) || request.precio == null || request.stock == null) {
+      return badRequest("nombre, precio y stock son obligatorios.");
     }
 
-    @GET
-    @Path("{id}")
-    public Response getById(@PathParam("id") Long id) {
-        Producto producto = em.find(Producto.class, id);
-        if (producto == null) {
-            return notFound("Producto no encontrado.");
-        }
-        return Response.ok(DtoMapper.producto(producto)).build();
+    if (request.precio.compareTo(BigDecimal.ZERO) <= 0) {
+      return badRequest("El precio debe ser mayor que cero.");
     }
 
-    @POST
-    public Response create(ProductoRequest request) {
-        if (request == null || isBlank(request.nombre) || request.precio == null || request.stock == null) {
-            return badRequest("nombre, precio y stock son obligatorios.");
-        }
+    if (request.stock < 0) {
+      return badRequest("El stock no puede ser negativo.");
+    }
 
+    return executeInTransaction(() -> {
+      Producto producto = new Producto();
+      producto.setNombre(request.nombre.trim());
+      producto.setDescripcion(request.descripcion);
+      producto.setPrecio(request.precio);
+      producto.setStock(request.stock);
+      producto.setActivo(request.activo == null ? Boolean.TRUE : request.activo);
+      em.persist(producto);
+
+      Map<String, Object> response = new LinkedHashMap<>();
+      response.put("mensaje", "Producto creado correctamente.");
+      response.put("producto", DtoMapper.producto(producto));
+      return Response.status(Response.Status.CREATED)
+          .entity(response)
+          .build();
+    });
+  }
+
+  @PUT
+  @Path("{id}")
+  public Response update(@PathParam("id") Long id, ProductoRequest request) {
+    if (request == null) {
+      return badRequest("No se recibieron datos para actualizar.");
+    }
+
+    return executeInTransaction(() -> {
+      Producto producto = em.find(Producto.class, id);
+      if (producto == null) {
+        return notFound("Producto no encontrado.");
+      }
+
+      if (!isBlank(request.nombre)) {
+        producto.setNombre(request.nombre.trim());
+      }
+
+      if (request.descripcion != null) {
+        producto.setDescripcion(request.descripcion);
+      }
+
+      if (request.precio != null) {
         if (request.precio.compareTo(BigDecimal.ZERO) <= 0) {
-            return badRequest("El precio debe ser mayor que cero.");
+          return badRequest("El precio debe ser mayor que cero.");
         }
+        producto.setPrecio(request.precio);
+      }
 
+      if (request.stock != null) {
         if (request.stock < 0) {
-            return badRequest("El stock no puede ser negativo.");
+          return badRequest("El stock no puede ser negativo.");
         }
+        producto.setStock(request.stock);
+      }
 
-        return executeInTransaction(() -> {
-            Producto producto = new Producto();
-            producto.setNombre(request.nombre.trim());
-            producto.setDescripcion(request.descripcion);
-            producto.setPrecio(request.precio);
-            producto.setStock(request.stock);
-            producto.setActivo(request.activo == null ? Boolean.TRUE : request.activo);
-            em.persist(producto);
+      if (request.activo != null) {
+        producto.setActivo(request.activo);
+      }
 
-            Map<String, Object> response = new LinkedHashMap<>();
-            response.put("mensaje", "Producto creado correctamente.");
-            response.put("producto", DtoMapper.producto(producto));
-            return Response.status(Response.Status.CREATED)
-                    .entity(response)
-                    .build();
-        });
-    }
+      Map<String, Object> response = new LinkedHashMap<>();
+      response.put("mensaje", "Producto actualizado correctamente.");
+      response.put("producto", DtoMapper.producto(producto));
+      return Response.ok(response).build();
+    });
+  }
 
-    @PUT
-    @Path("{id}")
-    public Response update(@PathParam("id") Long id, ProductoRequest request) {
-        if (request == null) {
-            return badRequest("No se recibieron datos para actualizar.");
-        }
+  @DELETE
+  @Path("{id}")
+  public Response delete(@PathParam("id") Long id) {
+    return executeInTransaction(() -> {
+      Producto producto = em.find(Producto.class, id);
+      if (producto == null) {
+        return notFound("Producto no encontrado.");
+      }
 
-        return executeInTransaction(() -> {
-            Producto producto = em.find(Producto.class, id);
-            if (producto == null) {
-                return notFound("Producto no encontrado.");
-            }
+      producto.setActivo(Boolean.FALSE);
+      return Response.ok(message("Producto inactivado correctamente.")).build();
+    });
+  }
 
-            if (!isBlank(request.nombre)) {
-                producto.setNombre(request.nombre.trim());
-            }
-
-            if (request.descripcion != null) {
-                producto.setDescripcion(request.descripcion);
-            }
-
-            if (request.precio != null) {
-                if (request.precio.compareTo(BigDecimal.ZERO) <= 0) {
-                    return badRequest("El precio debe ser mayor que cero.");
-                }
-                producto.setPrecio(request.precio);
-            }
-
-            if (request.stock != null) {
-                if (request.stock < 0) {
-                    return badRequest("El stock no puede ser negativo.");
-                }
-                producto.setStock(request.stock);
-            }
-
-            if (request.activo != null) {
-                producto.setActivo(request.activo);
-            }
-
-            Map<String, Object> response = new LinkedHashMap<>();
-            response.put("mensaje", "Producto actualizado correctamente.");
-            response.put("producto", DtoMapper.producto(producto));
-            return Response.ok(response).build();
-        });
-    }
-
-    @DELETE
-    @Path("{id}")
-    public Response delete(@PathParam("id") Long id) {
-        return executeInTransaction(() -> {
-            Producto producto = em.find(Producto.class, id);
-            if (producto == null) {
-                return notFound("Producto no encontrado.");
-            }
-
-            producto.setActivo(Boolean.FALSE);
-            return Response.ok(message("Producto inactivado correctamente.")).build();
-        });
-    }
-
-    public static class ProductoRequest {
-        public String nombre;
-        public String descripcion;
-        public BigDecimal precio;
-        public Integer stock;
-        public Boolean activo;
-    }
+  public static class ProductoRequest {
+    public String nombre;
+    public String descripcion;
+    public BigDecimal precio;
+    public Integer stock;
+    public Boolean activo;
+  }
 }

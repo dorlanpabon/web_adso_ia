@@ -1,65 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda ADSO | Login</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda ADSO | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
+
 <body data-page="login">
-    <div class="atmo atmo-left" aria-hidden="true"></div>
-    <div class="atmo atmo-right" aria-hidden="true"></div>
+  <div class="atmo atmo-left" aria-hidden="true"></div>
+  <div class="atmo atmo-right" aria-hidden="true"></div>
 
-    <header class="topbar container">
-        <a class="brand" href="index.html">Tienda ADSO</a>
-        <nav class="menu" aria-label="Navegacion principal">
-            <a class="is-current" href="login.html">Login</a>
-            <a href="registro.html">Registro</a>
-            <a href="productos.html">Productos y Carrito</a>
-            <a href="ventas.html">Ventas</a>
-        </nav>
-        <div class="session-tools">
-            <span id="user-pill" class="pill">Invitado</span>
-            <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+  <header class="topbar container">
+    <a class="brand" href="index.html">Tienda ADSO</a>
+    <nav class="menu" aria-label="Navegacion principal">
+      <a class="is-current" href="login.html">Login</a>
+      <a href="registro.html">Registro</a>
+      <a href="productos.html">Productos y Carrito</a>
+      <a href="ventas.html">Ventas</a>
+    </nav>
+    <div class="session-tools">
+      <span id="user-pill" class="pill">Invitado</span>
+      <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+    </div>
+  </header>
+
+  <main class="container auth-layout">
+    <section class="card auth-card">
+      <p class="kicker">Bienvenido</p>
+      <h1>Iniciar sesion</h1>
+      <p>Ingresa con tu correo y contrasena para acceder al sistema.</p>
+
+      <form id="login-form" class="form" novalidate>
+        <div class="field">
+          <label for="login-correo">Correo</label>
+          <input id="login-correo" name="correo" type="email" placeholder="usuario@correo.com" required>
         </div>
-    </header>
+        <div class="field">
+          <label for="login-password">Contrasena</label>
+          <input id="login-password" name="password" type="password" placeholder="********" required>
+        </div>
+        <button id="login-submit" class="btn btn-primary" type="submit">Entrar al sistema</button>
+      </form>
 
-    <main class="container auth-layout">
-        <section class="card auth-card">
-            <p class="kicker">Bienvenido</p>
-            <h1>Iniciar sesion</h1>
-            <p>Ingresa con tu correo y contrasena para acceder al sistema.</p>
+      <p class="muted">No tienes cuenta? <a href="registro.html">Crear cuenta nueva</a></p>
+    </section>
 
-            <form id="login-form" class="form" novalidate>
-                <div class="field">
-                    <label for="login-correo">Correo</label>
-                    <input id="login-correo" name="correo" type="email" placeholder="usuario@correo.com" required>
-                </div>
-                <div class="field">
-                    <label for="login-password">Contrasena</label>
-                    <input id="login-password" name="password" type="password" placeholder="********" required>
-                </div>
-                <button id="login-submit" class="btn btn-primary" type="submit">Entrar al sistema</button>
-            </form>
+    <aside class="card side-info">
+      <h2>Recomendaciones</h2>
+      <ul class="plain-list">
+        <li>Usa un correo valido para recuperar acceso facilmente.</li>
+        <li>Al iniciar sesion podras gestionar carrito y ventas.</li>
+        <li>Si eres administrador, tendras control de productos y estados de venta.</li>
+      </ul>
+    </aside>
+  </main>
 
-            <p class="muted">No tienes cuenta? <a href="registro.html">Crear cuenta nueva</a></p>
-        </section>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-        <aside class="card side-info">
-            <h2>Recomendaciones</h2>
-            <ul class="plain-list">
-                <li>Usa un correo valido para recuperar acceso facilmente.</li>
-                <li>Al iniciar sesion podras gestionar carrito y ventas.</li>
-                <li>Si eres administrador, tendras control de productos y estados de venta.</li>
-            </ul>
-        </aside>
-    </main>
-
-    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
-
-    <script src="assets/app.js"></script>
+  <script src="assets/app.js"></script>
 </body>
+
 </html>

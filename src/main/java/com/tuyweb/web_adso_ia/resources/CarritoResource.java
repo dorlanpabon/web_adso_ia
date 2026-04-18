@@ -22,200 +22,200 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class CarritoResource extends BaseResource {
 
-    @GET
-    @Path("usuario/{usuarioId}")
-    public Response getCarritoByUsuario(@PathParam("usuarioId") Long usuarioId) {
-        return executeInTransaction(() -> {
-            Usuario usuario = em.find(Usuario.class, usuarioId);
-            if (usuario == null) {
-                return notFound("Usuario no encontrado.");
-            }
+  @GET
+  @Path("usuario/{usuarioId}")
+  public Response getCarritoByUsuario(@PathParam("usuarioId") Long usuarioId) {
+    return executeInTransaction(() -> {
+      Usuario usuario = em.find(Usuario.class, usuarioId);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado.");
+      }
 
-            Carrito carrito = findOrCreateOpenCarrito(usuario);
-            return Response.ok(DtoMapper.carrito(carrito)).build();
-        });
+      Carrito carrito = findOrCreateOpenCarrito(usuario);
+      return Response.ok(DtoMapper.carrito(carrito)).build();
+    });
+  }
+
+  @POST
+  @Path("usuario/{usuarioId}/items")
+  public Response addItem(@PathParam("usuarioId") Long usuarioId, AddItemRequest request) {
+    if (request == null || request.productoId == null || request.cantidad == null) {
+      return badRequest("productoId y cantidad son obligatorios.");
     }
 
-    @POST
-    @Path("usuario/{usuarioId}/items")
-    public Response addItem(@PathParam("usuarioId") Long usuarioId, AddItemRequest request) {
-        if (request == null || request.productoId == null || request.cantidad == null) {
-            return badRequest("productoId y cantidad son obligatorios.");
-        }
-
-        if (request.cantidad <= 0) {
-            return badRequest("La cantidad debe ser mayor que cero.");
-        }
-
-        return executeInTransaction(() -> {
-            Usuario usuario = em.find(Usuario.class, usuarioId);
-            if (usuario == null) {
-                return notFound("Usuario no encontrado.");
-            }
-
-            Producto producto = em.find(Producto.class, request.productoId);
-            if (producto == null || !Boolean.TRUE.equals(producto.getActivo())) {
-                return notFound("Producto no disponible.");
-            }
-
-            Carrito carrito = findOrCreateOpenCarrito(usuario);
-
-            CarritoItem itemExistente = carrito.getItems()
-                    .stream()
-                    .filter(item -> item.getProducto().getId().equals(producto.getId()))
-                    .findFirst()
-                    .orElse(null);
-
-            int cantidadTotal = request.cantidad;
-            if (itemExistente != null) {
-                cantidadTotal = itemExistente.getCantidad() + request.cantidad;
-            }
-
-            if (cantidadTotal > producto.getStock()) {
-                return badRequest("No hay stock suficiente para la cantidad solicitada.");
-            }
-
-            if (itemExistente == null) {
-                CarritoItem nuevoItem = new CarritoItem();
-                nuevoItem.setCarrito(carrito);
-                nuevoItem.setProducto(producto);
-                nuevoItem.setCantidad(request.cantidad);
-                nuevoItem.setPrecioUnitario(producto.getPrecio());
-                em.persist(nuevoItem);
-                carrito.getItems().add(nuevoItem);
-            } else {
-                itemExistente.setCantidad(cantidadTotal);
-            }
-
-            em.flush();
-            Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
-            return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
-        });
+    if (request.cantidad <= 0) {
+      return badRequest("La cantidad debe ser mayor que cero.");
     }
 
-    @PUT
-    @Path("usuario/{usuarioId}/items/{itemId}")
-    public Response updateItem(@PathParam("usuarioId") Long usuarioId,
-            @PathParam("itemId") Long itemId,
-            UpdateItemRequest request) {
-        if (request == null || request.cantidad == null) {
-            return badRequest("La cantidad es obligatoria.");
-        }
+    return executeInTransaction(() -> {
+      Usuario usuario = em.find(Usuario.class, usuarioId);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado.");
+      }
 
-        if (request.cantidad <= 0) {
-            return badRequest("La cantidad debe ser mayor que cero.");
-        }
+      Producto producto = em.find(Producto.class, request.productoId);
+      if (producto == null || !Boolean.TRUE.equals(producto.getActivo())) {
+        return notFound("Producto no disponible.");
+      }
 
-        return executeInTransaction(() -> {
-            Usuario usuario = em.find(Usuario.class, usuarioId);
-            if (usuario == null) {
-                return notFound("Usuario no encontrado.");
-            }
+      Carrito carrito = findOrCreateOpenCarrito(usuario);
 
-            Carrito carrito = findOpenCarritoWithItems(usuarioId);
-            if (carrito == null) {
-                return notFound("Carrito no encontrado.");
-            }
+      CarritoItem itemExistente = carrito.getItems()
+          .stream()
+          .filter(item -> item.getProducto().getId().equals(producto.getId()))
+          .findFirst()
+          .orElse(null);
 
-            CarritoItem item = carrito.getItems()
-                    .stream()
-                    .filter(current -> current.getId().equals(itemId))
-                    .findFirst()
-                    .orElse(null);
+      int cantidadTotal = request.cantidad;
+      if (itemExistente != null) {
+        cantidadTotal = itemExistente.getCantidad() + request.cantidad;
+      }
 
-            if (item == null) {
-                return notFound("Item no encontrado en el carrito.");
-            }
+      if (cantidadTotal > producto.getStock()) {
+        return badRequest("No hay stock suficiente para la cantidad solicitada.");
+      }
 
-            if (request.cantidad > item.getProducto().getStock()) {
-                return badRequest("No hay stock suficiente para actualizar el item.");
-            }
+      if (itemExistente == null) {
+        CarritoItem nuevoItem = new CarritoItem();
+        nuevoItem.setCarrito(carrito);
+        nuevoItem.setProducto(producto);
+        nuevoItem.setCantidad(request.cantidad);
+        nuevoItem.setPrecioUnitario(producto.getPrecio());
+        em.persist(nuevoItem);
+        carrito.getItems().add(nuevoItem);
+      } else {
+        itemExistente.setCantidad(cantidadTotal);
+      }
 
-            item.setCantidad(request.cantidad);
-            em.flush();
+      em.flush();
+      Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
+      return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
+    });
+  }
 
-            Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
-            return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
-        });
+  @PUT
+  @Path("usuario/{usuarioId}/items/{itemId}")
+  public Response updateItem(@PathParam("usuarioId") Long usuarioId,
+      @PathParam("itemId") Long itemId,
+      UpdateItemRequest request) {
+    if (request == null || request.cantidad == null) {
+      return badRequest("La cantidad es obligatoria.");
     }
 
-    @DELETE
-    @Path("usuario/{usuarioId}/items/{itemId}")
-    public Response deleteItem(@PathParam("usuarioId") Long usuarioId, @PathParam("itemId") Long itemId) {
-        return executeInTransaction(() -> {
-            Usuario usuario = em.find(Usuario.class, usuarioId);
-            if (usuario == null) {
-                return notFound("Usuario no encontrado.");
-            }
-
-            Carrito carrito = findOpenCarritoWithItems(usuarioId);
-            if (carrito == null) {
-                return notFound("Carrito no encontrado.");
-            }
-
-            boolean removed = carrito.getItems().removeIf(item -> item.getId().equals(itemId));
-            if (!removed) {
-                return notFound("Item no encontrado en el carrito.");
-            }
-
-            em.flush();
-            Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
-            return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
-        });
+    if (request.cantidad <= 0) {
+      return badRequest("La cantidad debe ser mayor que cero.");
     }
 
-    @DELETE
-    @Path("usuario/{usuarioId}/items")
-    public Response clearItems(@PathParam("usuarioId") Long usuarioId) {
-        return executeInTransaction(() -> {
-            Usuario usuario = em.find(Usuario.class, usuarioId);
-            if (usuario == null) {
-                return notFound("Usuario no encontrado.");
-            }
+    return executeInTransaction(() -> {
+      Usuario usuario = em.find(Usuario.class, usuarioId);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado.");
+      }
 
-            Carrito carrito = findOpenCarritoWithItems(usuarioId);
-            if (carrito == null) {
-                return notFound("Carrito no encontrado.");
-            }
+      Carrito carrito = findOpenCarritoWithItems(usuarioId);
+      if (carrito == null) {
+        return notFound("Carrito no encontrado.");
+      }
 
-            carrito.getItems().clear();
-            em.flush();
-            return Response.ok(DtoMapper.carrito(carrito)).build();
-        });
+      CarritoItem item = carrito.getItems()
+          .stream()
+          .filter(current -> current.getId().equals(itemId))
+          .findFirst()
+          .orElse(null);
+
+      if (item == null) {
+        return notFound("Item no encontrado en el carrito.");
+      }
+
+      if (request.cantidad > item.getProducto().getStock()) {
+        return badRequest("No hay stock suficiente para actualizar el item.");
+      }
+
+      item.setCantidad(request.cantidad);
+      em.flush();
+
+      Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
+      return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
+    });
+  }
+
+  @DELETE
+  @Path("usuario/{usuarioId}/items/{itemId}")
+  public Response deleteItem(@PathParam("usuarioId") Long usuarioId, @PathParam("itemId") Long itemId) {
+    return executeInTransaction(() -> {
+      Usuario usuario = em.find(Usuario.class, usuarioId);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado.");
+      }
+
+      Carrito carrito = findOpenCarritoWithItems(usuarioId);
+      if (carrito == null) {
+        return notFound("Carrito no encontrado.");
+      }
+
+      boolean removed = carrito.getItems().removeIf(item -> item.getId().equals(itemId));
+      if (!removed) {
+        return notFound("Item no encontrado en el carrito.");
+      }
+
+      em.flush();
+      Carrito carritoActualizado = findOpenCarritoWithItems(usuarioId);
+      return Response.ok(DtoMapper.carrito(carritoActualizado)).build();
+    });
+  }
+
+  @DELETE
+  @Path("usuario/{usuarioId}/items")
+  public Response clearItems(@PathParam("usuarioId") Long usuarioId) {
+    return executeInTransaction(() -> {
+      Usuario usuario = em.find(Usuario.class, usuarioId);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado.");
+      }
+
+      Carrito carrito = findOpenCarritoWithItems(usuarioId);
+      if (carrito == null) {
+        return notFound("Carrito no encontrado.");
+      }
+
+      carrito.getItems().clear();
+      em.flush();
+      return Response.ok(DtoMapper.carrito(carrito)).build();
+    });
+  }
+
+  private Carrito findOrCreateOpenCarrito(Usuario usuario) {
+    Carrito carrito = findOpenCarritoWithItems(usuario.getId());
+    if (carrito != null) {
+      return carrito;
     }
 
-    private Carrito findOrCreateOpenCarrito(Usuario usuario) {
-        Carrito carrito = findOpenCarritoWithItems(usuario.getId());
-        if (carrito != null) {
-            return carrito;
-        }
+    Carrito nuevoCarrito = new Carrito();
+    nuevoCarrito.setUsuario(usuario);
+    nuevoCarrito.setEstado(CarritoEstado.ABIERTO);
+    em.persist(nuevoCarrito);
+    em.flush();
 
-        Carrito nuevoCarrito = new Carrito();
-        nuevoCarrito.setUsuario(usuario);
-        nuevoCarrito.setEstado(CarritoEstado.ABIERTO);
-        em.persist(nuevoCarrito);
-        em.flush();
+    return findOpenCarritoWithItems(usuario.getId());
+  }
 
-        return findOpenCarritoWithItems(usuario.getId());
-    }
+  private Carrito findOpenCarritoWithItems(Long usuarioId) {
+    return em.createQuery(
+        "SELECT DISTINCT c FROM Carrito c LEFT JOIN FETCH c.items i LEFT JOIN FETCH i.producto WHERE c.usuario.id = :usuarioId AND c.estado = :estado",
+        Carrito.class)
+        .setParameter("usuarioId", usuarioId)
+        .setParameter("estado", CarritoEstado.ABIERTO)
+        .getResultStream()
+        .findFirst()
+        .orElse(null);
+  }
 
-    private Carrito findOpenCarritoWithItems(Long usuarioId) {
-        return em.createQuery(
-                "SELECT DISTINCT c FROM Carrito c LEFT JOIN FETCH c.items i LEFT JOIN FETCH i.producto WHERE c.usuario.id = :usuarioId AND c.estado = :estado",
-                Carrito.class)
-                .setParameter("usuarioId", usuarioId)
-                .setParameter("estado", CarritoEstado.ABIERTO)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-    }
+  public static class AddItemRequest {
+    public Long productoId;
+    public Integer cantidad;
+  }
 
-    public static class AddItemRequest {
-        public Long productoId;
-        public Integer cantidad;
-    }
-
-    public static class UpdateItemRequest {
-        public Integer cantidad;
-    }
+  public static class UpdateItemRequest {
+    public Integer cantidad;
+  }
 }

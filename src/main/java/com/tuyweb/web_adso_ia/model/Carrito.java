@@ -22,71 +22,71 @@ import java.util.List;
 @Table(name = "carritos")
 public class Carrito {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "usuario_id", nullable = false)
+  private Usuario usuario;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private CarritoEstado estado;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private CarritoEstado estado;
 
-    @Column(name = "creado_en", nullable = false)
-    private LocalDateTime creadoEn;
+  @Column(name = "creado_en", nullable = false)
+  private LocalDateTime creadoEn;
 
-    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CarritoItem> items = new ArrayList<>();
+  @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CarritoItem> items = new ArrayList<>();
 
-    @PrePersist
-    private void prePersist() {
-        if (estado == null) {
-            estado = CarritoEstado.ABIERTO;
-        }
-        if (creadoEn == null) {
-            creadoEn = LocalDateTime.now();
-        }
+  @PrePersist
+  private void prePersist() {
+    if (estado == null) {
+      estado = CarritoEstado.ABIERTO;
     }
-
-    public Long getId() {
-        return id;
+    if (creadoEn == null) {
+      creadoEn = LocalDateTime.now();
     }
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+  public Usuario getUsuario() {
+    return usuario;
+  }
 
-    public CarritoEstado getEstado() {
-        return estado;
-    }
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
+  }
 
-    public void setEstado(CarritoEstado estado) {
-        this.estado = estado;
-    }
+  public CarritoEstado getEstado() {
+    return estado;
+  }
 
-    public LocalDateTime getCreadoEn() {
-        return creadoEn;
-    }
+  public void setEstado(CarritoEstado estado) {
+    this.estado = estado;
+  }
 
-    public void setCreadoEn(LocalDateTime creadoEn) {
-        this.creadoEn = creadoEn;
-    }
+  public LocalDateTime getCreadoEn() {
+    return creadoEn;
+  }
 
-    public List<CarritoItem> getItems() {
-        return items;
-    }
+  public void setCreadoEn(LocalDateTime creadoEn) {
+    this.creadoEn = creadoEn;
+  }
 
-    public void setItems(List<CarritoItem> items) {
-        this.items = items;
-    }
+  public List<CarritoItem> getItems() {
+    return items;
+  }
+
+  public void setItems(List<CarritoItem> items) {
+    this.items = items;
+  }
 }

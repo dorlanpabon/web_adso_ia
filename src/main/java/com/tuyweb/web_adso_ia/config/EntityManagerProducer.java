@@ -13,29 +13,29 @@ import jakarta.persistence.Persistence;
 @ApplicationScoped
 public class EntityManagerProducer {
 
-    private EntityManagerFactory entityManagerFactory;
+  private EntityManagerFactory entityManagerFactory;
 
-    @PostConstruct
-    public void init() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("my_persistence_unit");
-    }
+  @PostConstruct
+  public void init() {
+    entityManagerFactory = Persistence.createEntityManagerFactory("my_persistence_unit");
+  }
 
-    @Produces
-    @RequestScoped
-    public EntityManager createEntityManager() {
-        return entityManagerFactory.createEntityManager();
-    }
+  @Produces
+  @RequestScoped
+  public EntityManager createEntityManager() {
+    return entityManagerFactory.createEntityManager();
+  }
 
-    public void closeEntityManager(@Disposes EntityManager entityManager) {
-        if (entityManager != null && entityManager.isOpen()) {
-            entityManager.close();
-        }
+  public void closeEntityManager(@Disposes EntityManager entityManager) {
+    if (entityManager != null && entityManager.isOpen()) {
+      entityManager.close();
     }
+  }
 
-    @PreDestroy
-    public void destroy() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
+  @PreDestroy
+  public void destroy() {
+    if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+      entityManagerFactory.close();
     }
+  }
 }

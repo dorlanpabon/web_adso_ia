@@ -1,7 +1,8 @@
 # Web ADSO IA
 
-Aplicacion web de comercio construida con Jakarta EE, JAX-RS, JPA (Hibernate) y MySQL.
-Incluye flujo completo de usuarios, productos, carrito y ventas con interfaz multipagina.
+Aplicacion web de comercio construida con Jakarta EE, JAX-RS, JPA (Hibernate) y
+MySQL. Incluye flujo completo de usuarios, productos, carrito y ventas con
+interfaz multipagina.
 
 ## Funcionalidades
 
@@ -51,7 +52,8 @@ Si root no tiene contrasena:
 
 Por defecto el proyecto usa:
 
-- URL: jdbc:mysql://localhost:3306/web_adso_ia_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+- URL:
+  jdbc:mysql://localhost:3306/web_adso_ia_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 - Usuario: root
 - Contrasena: vacia
 
