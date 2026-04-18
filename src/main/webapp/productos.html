@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda ADSO | Productos y Carrito</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="products">
+    <div class="atmo atmo-left" aria-hidden="true"></div>
+    <div class="atmo atmo-right" aria-hidden="true"></div>
+
+    <header class="topbar container">
+        <a class="brand" href="index.html">Tienda ADSO</a>
+        <nav class="menu" aria-label="Navegacion principal">
+            <a href="login.html">Login</a>
+            <a href="registro.html">Registro</a>
+            <a class="is-current" href="productos.html">Productos y Carrito</a>
+            <a href="ventas.html">Ventas</a>
+        </nav>
+        <div class="session-tools">
+            <span id="user-pill" class="pill">Invitado</span>
+            <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+        </div>
+    </header>
+
+    <main class="container products-layout">
+        <section class="card product-zone">
+            <div class="section-head">
+                <div>
+                    <p class="kicker">Catalogo</p>
+                    <h1>Productos disponibles</h1>
+                </div>
+                <div class="head-actions">
+                    <label class="check-wrap" for="only-active">
+                        <input id="only-active" type="checkbox" checked>
+                        Solo activos
+                    </label>
+                    <button id="refresh-products" class="btn btn-light" type="button">Actualizar lista</button>
+                </div>
+            </div>
+            <div id="products-grid" class="product-grid"></div>
+        </section>
+
+        <aside class="card cart-zone">
+            <p class="kicker">Compra actual</p>
+            <h2>Carrito</h2>
+            <p id="cart-empty" class="muted">Cargando carrito...</p>
+            <ul id="cart-list" class="cart-list"></ul>
+            <div class="cart-total">
+                <span>Total</span>
+                <strong id="cart-total">0.00</strong>
+            </div>
+            <div class="stack-actions">
+                <button id="clear-cart" class="btn btn-light" type="button">Vaciar carrito</button>
+                <button id="checkout" class="btn btn-primary" type="button">Finalizar compra</button>
+                <button id="refresh-cart" class="btn btn-light" type="button">Recargar carrito</button>
+            </div>
+            <p class="muted">Al finalizar compra se genera una venta automaticamente.</p>
+        </aside>
+
+        <section id="admin-panel" class="card admin-panel hidden">
+            <div class="section-head compact">
+                <div>
+                    <p class="kicker">Administracion</p>
+                    <h2 id="product-form-title">Crear producto</h2>
+                </div>
+            </div>
+
+            <form id="product-form" class="form form-grid" novalidate>
+                <div class="field">
+                    <label for="prod-nombre">Nombre</label>
+                    <input id="prod-nombre" name="nombre" type="text" required>
+                </div>
+                <div class="field">
+                    <label for="prod-precio">Precio</label>
+                    <input id="prod-precio" name="precio" type="number" min="0.01" step="0.01" required>
+                </div>
+                <div class="field full">
+                    <label for="prod-descripcion">Descripcion</label>
+                    <textarea id="prod-descripcion" name="descripcion" rows="3"></textarea>
+                </div>
+                <div class="field">
+                    <label for="prod-stock">Stock</label>
+                    <input id="prod-stock" name="stock" type="number" min="0" step="1" required>
+                </div>
+                <div class="field check-field">
+                    <label class="check-wrap" for="prod-activo">
+                        <input id="prod-activo" name="activo" type="checkbox" checked>
+                        Producto activo
+                    </label>
+                </div>
+                <div class="actions-inline full">
+                    <button id="save-product" class="btn btn-primary" type="submit">Guardar producto</button>
+                    <button id="cancel-edit-product" class="btn btn-light hidden" type="button">Cancelar edicion</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>

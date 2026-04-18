@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda ADSO | Registro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="register">
+    <div class="atmo atmo-left" aria-hidden="true"></div>
+    <div class="atmo atmo-right" aria-hidden="true"></div>
+
+    <header class="topbar container">
+        <a class="brand" href="index.html">Tienda ADSO</a>
+        <nav class="menu" aria-label="Navegacion principal">
+            <a href="login.html">Login</a>
+            <a class="is-current" href="registro.html">Registro</a>
+            <a href="productos.html">Productos y Carrito</a>
+            <a href="ventas.html">Ventas</a>
+        </nav>
+        <div class="session-tools">
+            <span id="user-pill" class="pill">Invitado</span>
+            <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+        </div>
+    </header>
+
+    <main class="container auth-layout">
+        <section class="card auth-card">
+            <p class="kicker">Nuevo usuario</p>
+            <h1>Registro</h1>
+            <p>Crea tu cuenta para comprar y administrar procesos en la tienda.</p>
+
+            <form id="register-form" class="form" novalidate>
+                <div class="field">
+                    <label for="reg-nombre">Nombre completo</label>
+                    <input id="reg-nombre" name="nombre" type="text" placeholder="Ejemplo: Laura Gomez" required>
+                </div>
+                <div class="field">
+                    <label for="reg-correo">Correo</label>
+                    <input id="reg-correo" name="correo" type="email" placeholder="usuario@correo.com" required>
+                </div>
+                <div class="field">
+                    <label for="reg-password">Contrasena</label>
+                    <input id="reg-password" name="password" type="password" placeholder="Minimo 6 caracteres" minlength="6" required>
+                </div>
+                <div class="field">
+                    <label for="reg-rol">Rol</label>
+                    <select id="reg-rol" name="rol">
+                        <option value="CLIENTE" selected>CLIENTE</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <button id="register-submit" class="btn btn-primary" type="submit">Crear cuenta</button>
+            </form>
+
+            <p class="muted">Ya tienes cuenta? <a href="login.html">Iniciar sesion</a></p>
+        </section>
+
+        <aside class="card side-info">
+            <h2>Antes de continuar</h2>
+            <ul class="plain-list">
+                <li>Con rol CLIENTE podras navegar productos y comprar.</li>
+                <li>Con rol ADMIN podras tambien editar catalogo y ventas.</li>
+                <li>Despues del registro entraras directamente al sistema.</li>
+            </ul>
+        </aside>
+    </main>
+
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda ADSO | Ventas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="sales">
+    <div class="atmo atmo-left" aria-hidden="true"></div>
+    <div class="atmo atmo-right" aria-hidden="true"></div>
+
+    <header class="topbar container">
+        <a class="brand" href="index.html">Tienda ADSO</a>
+        <nav class="menu" aria-label="Navegacion principal">
+            <a href="login.html">Login</a>
+            <a href="registro.html">Registro</a>
+            <a href="productos.html">Productos y Carrito</a>
+            <a class="is-current" href="ventas.html">Ventas</a>
+        </nav>
+        <div class="session-tools">
+            <span id="user-pill" class="pill">Invitado</span>
+            <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+        </div>
+    </header>
+
+    <main class="container sales-layout">
+        <section class="card sales-zone">
+            <div class="section-head">
+                <div>
+                    <p class="kicker">Seguimiento</p>
+                    <h1>Ventas</h1>
+                    <p class="muted">Consulta y controla las ventas registradas en el sistema.</p>
+                </div>
+                <div class="head-actions">
+                    <button id="load-my-sales" class="btn btn-primary" type="button">Mis ventas</button>
+                    <button id="load-all-sales" class="btn btn-light hidden" type="button">Todas las ventas</button>
+                </div>
+            </div>
+
+            <div id="sales-list" class="sales-grid"></div>
+        </section>
+    </main>
+
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>

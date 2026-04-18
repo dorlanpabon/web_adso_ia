@@ -1,0 +1,54 @@
+# Maven and build artifacts
+target/
+out/
+build/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven helper files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Logs and crash dumps
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# IDE and editor files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+dist/
+nbactions.xml
+.nbjavac/
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Local environment files
+.env
+.env.*
+*.local
+
+# Runtime temporary files
+payara-micro*.log

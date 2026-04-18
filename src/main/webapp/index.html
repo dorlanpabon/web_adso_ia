@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda ADSO | Inicio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="home">
+    <div class="atmo atmo-left" aria-hidden="true"></div>
+    <div class="atmo atmo-right" aria-hidden="true"></div>
+
+    <header class="topbar container">
+        <a class="brand" href="index.html">Tienda ADSO</a>
+        <nav class="menu" aria-label="Navegacion principal">
+            <a href="login.html">Login</a>
+            <a href="registro.html">Registro</a>
+            <a href="productos.html">Productos y Carrito</a>
+            <a href="ventas.html">Ventas</a>
+        </nav>
+        <div class="session-tools">
+            <span id="user-pill" class="pill">Invitado</span>
+            <button id="logout-button" class="btn btn-light hidden" type="button">Cerrar sesion</button>
+        </div>
+    </header>
+
+    <main class="container hero-home">
+        <section class="hero-copy card">
+            <p class="kicker">Sistema comercial web</p>
+            <h1>Gestiona tu tienda con un flujo claro y profesional</h1>
+            <p>
+                Inicia sesion, registra usuarios, administra productos, compra desde carrito y consulta ventas
+                en una experiencia sencilla para cualquier usuario.
+            </p>
+            <div class="hero-actions">
+                <a id="home-primary-action" class="btn btn-primary" href="login.html">Iniciar sesion</a>
+                <a class="btn btn-light" href="registro.html">Crear cuenta</a>
+            </div>
+            <p class="api-hint">API REST: <span id="api-base" class="mono"></span></p>
+        </section>
+
+        <section class="hero-features grid-3">
+            <article class="card feature-card">
+                <h2>Acceso simple</h2>
+                <p>Paginas separadas para login y registro con validaciones claras y mensajes amigables.</p>
+            </article>
+            <article class="card feature-card">
+                <h2>Compra guiada</h2>
+                <p>Productos y carrito en una sola pagina para comprar sin perder el contexto.</p>
+            </article>
+            <article class="card feature-card">
+                <h2>Control de ventas</h2>
+                <p>Historial de ventas por usuario, con acciones administrativas para seguimiento.</p>
+            </article>
+        </section>
+    </main>
+
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>
